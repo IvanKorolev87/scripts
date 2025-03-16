@@ -1,0 +1,23 @@
+{
+  "name": "issues",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@octokit/rest": "^21.1.1",
+    "csv-parser": "^3.2.0",
+    "dotenv": "^16.4.7",
+    "readline-sync": "^1.4.10",
+    "xmlbuilder2": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10"
+  }
+}

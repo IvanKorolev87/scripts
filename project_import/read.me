@@ -1,1 +1,33 @@
-A set of scripts for transferring issues from the main tracker(file cvs) to Github Issues
+This project to handle batch processing of CSV data, where each row is mapped to a GitHub issue or XML output. The main functionality includes creating issues on GitHub, logging data, and processing a batch of items from a set of subfolders or CSV rows.
+
+Initially, the plan was to follow this algorithm:
+
+Read a row from the CSV file.
+Extract the task and comments from it.
+Search for the subfolder with files by the task number.
+Create a task on GitHub, add comments, and upload the necessary files.
+Everything seemed fine until we hit GitHub’s API limit of 500 requests per hour.
+
+First optimization: upload all files in advance through Git. However, there was a problem—GitHub allows no more than 2GB per commit. That’s why we created a bash script to commit 300 folders at a time, with arguments based on their index number.
+
+Second optimization: unnecessary comments were removed. If a task has 30 comments, that’s 31 requests, but we want only one. Since all comments are created by the same user on the current date, we decided to store the original name and date separately.
+
+Thus, we modified the process to include the comments as part of the task body. The script is run with a command like node ./index.js ./export/qc_platform_development_20250312_125317.csv github 300 missing.
+
+During the development process, we added an interface to convert everything to XML, mainly to ensure it looks neat and that all items are properly in place.
+
+File Descriptions:
+.env.example
+This file serves as a template for environment variables used in the project. It likely includes variables such as GITHUB_TOKEN, which are required for authentication with GitHub, and GITHUB_REPO_PATH to specify the repository where issues will be created.
+
+batch_commit.sh
+A shell script that helps with batch processing of subfolders. It adds a subset of directories (based on a given batch size and number) to a Git repository, commits them, and pushes the changes to the remote repository​
+.
+
+index.js
+This is the main script that handles CSV file processing. It reads rows from a CSV file, maps them to issues (or other output formats like XML), and optionally creates GitHub issues. It includes input handling, logging with a Logger instance, and outputs results based on the specified output type (GitHub or XML). The script can also handle missing issues if working in "missing" mode​
+.
+
+logger.js
+This file manages logging of processed data. It tracks the last processed CSV row index, stores issue data (including rate limits for GitHub requests), and ensures labels are only created once. It also checks for missing issues that have not been created on GitHub and saves this data in a JSON file​
+.
